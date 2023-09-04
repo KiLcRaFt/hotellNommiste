@@ -15,3 +15,9 @@ inserted.member_since
 ), 'guest on uuendatud'
 FROM deleted inner join inserted
 on deleted.id=inserted.id
+
+update room 
+set name='AstralStep'
+where id=1
+SELECT * from room;
+SELECT * from logi
