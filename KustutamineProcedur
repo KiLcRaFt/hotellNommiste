@@ -1,0 +1,12 @@
+Create procedure guestDel
+@id int
+as
+begin
+Select * from guest;
+delete guest
+where @id=id;
+Select * from guest;
+select * from logi;
+end;
+--kontroll
+exec guestDel 1;
