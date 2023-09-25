@@ -100,3 +100,87 @@ select * from vwEmployeesDetailsByDepartment
 
 select * from tblEmployee;
 select * from tblDepartment;
+
+-- 41 file
+
+create table tblProduct
+(
+ProductId int primary key,
+Name nvarchar(20),
+UnitPrice int
+)
+
+insert into tblProduct Values(1, 'Peciles', 20)
+insert into tblProduct Values(2, 'Teqila', 79)
+insert into tblProduct Values(3, 'Rum', 61)
+insert into tblProduct Values(4, 'Moonshine', 187)
+
+Create table tblProductSales
+(
+ProductId int,
+QuantitySold int
+)
+
+insert into tblProductSales values(1, 23)
+insert into tblProductSales values(2, 6)
+insert into tblProductSales values(1, 18)
+insert into tblProductSales values(4, 92)
+insert into tblProductSales values(3, 78)
+insert into tblProductSales values(3, 11)
+insert into tblProductSales values(2, 2)
+
+create view vWTotalSalesByproduct
+with SchemaBinding
+as
+select Name,
+SUM(ISNULL((QuantitySold * UnitPrice), 0)) as TotalSales,
+COUNT_BIG(*) as  TotalTransactios
+from dbo.tblProductSales
+join dbo.tblProduct
+on dbo.tblProduct.ProductId = dbo.tblProductSales.ProductId
+group by Name
+
+select * from vWTotalSalesByproduct
+
+Create Unique Clustered index UIX_vWTotalSalesByproduct_Name
+on vWTotalSalesByproduct(Name)
+
+EXECUTE SP_HELPCONSTRAINT vWTotalSalesByproduct
+
+-- 42 file
+
+Create View vWEmployeeDetails
+@Gender nvarchar(20)
+as
+Select Id, Name, Gender, DepartmentId
+from  tblEmployee
+where Gender = @Gender
+
+
+Create function fnEmployeeDetails(@Gender nvarchar(20))
+Returns Table
+as
+Return 
+(Select Id, Name, Gender, Departmetid
+from tblEmployee where Gender = @Gender)
+
+Select * from dbo.fnEmployeeDetails('Male')
+
+Create View vWEmployeeDetailsSorted
+as
+Select Id, Name, Gender, Departmetid
+from tblEmployee
+order by Id
+
+Create Table ##TestTempTable(Id int, Name nvarchar(20), Gender nvarchar(10))
+
+Insert into ##TestTempTable values(101, 'Martin', 'Male')
+Insert into ##TestTempTable values(102, 'Joe', 'Female')
+Insert into ##TestTempTable values(103, 'Pam', 'Female')
+Insert into ##TestTempTable values(104, 'James', 'Male')
+
+
+Create View vwOnTempTable
+as
+Select Id, Name, Gender
+from ##TestTempTable
